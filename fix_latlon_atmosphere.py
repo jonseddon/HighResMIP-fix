@@ -96,7 +96,10 @@ def fix_attributes(original_filename, tmp_filename):
 def perform_fix(original_filename, cube):
     cube = replace_2d_coords_with_1d(cube)
     tmp_filename = original_filename+"_new.nc"
-    iris.save(cube, tmp_filename, fill_value=1.e20)
+    iris.save(cube, tmp_filename,
+              unlimited_dimensions=['time'],
+              zlib=True, complevel=3, shuffle=True,
+              fill_value=1.e20)
     fix_attributes(original_filename, tmp_filename)
     backup_filename = original_filename+"_backup.nc"
     os.rename(original_filename, backup_filename)

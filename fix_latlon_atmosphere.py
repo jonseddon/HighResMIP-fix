@@ -156,6 +156,22 @@ def coord_2d_to_1d(coord):
     return coord_1d
 
 
+def remove_superfluous_dim_coords(cube, dims):
+    expr = re.compile('cell index along (first|second) dimension')
+    for dim in dims:
+        try:
+            superfluous_dim_coord = cube.coord(dimensions=dim, dim_coords=True)
+        except iris.exceptions.CoordinateNotFoundError:
+            pass
+        else:
+            long_name = superfluous_dim_coord.long_name
+            if expr.match(long_name) is None:
+                raise RuntimeError("Found dim coord on horizontal dimensions "
+                                   "with unexpected long_name '{}'".format(
+                                       long_name))
+            cube.remove_coord(superfluous_dim_coord)
+
+
 def replace_2d_coords_with_1d(cube):
     latitude = cube.coord('latitude')
     lat = coord_2d_to_1d(latitude)
@@ -165,6 +181,7 @@ def replace_2d_coords_with_1d(cube):
     assert dims == cube.coord_dims('longitude')
     cube.remove_coord(latitude)
     cube.remove_coord(longitude)
+    remove_superfluous_dim_coords(cube, dims)
     cube.add_dim_coord(lat, dims[0])
     cube.add_dim_coord(lon, dims[1])
     return cube

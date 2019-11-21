@@ -22,7 +22,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    fix_latlon_atmosphere(args.file, args.chunksize)
+    fix_latlon_atmosphere(args.file, args.chunk_size)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import argparse
 from functools import reduce
 import logging
 import math
@@ -12,9 +11,6 @@ import re
 import iris
 import netCDF4
 import numpy as np
-
-
-logging.basicConfig()
 
 
 def binlist(n, width=0):
@@ -253,27 +249,9 @@ def binary_size(string):
     size = num*factor
     return size
 
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--chunk-size',
-                        type=binary_size, default='64KiB',
-                        help='Target chunk size in terms of bytes. '
-                        'Must be given with units, either B for bytes '
-                        'or one of the IEC units (KiB, MiB, ...)')
-    parser.add_argument('file')
-    return parser.parse_args()
-
-
-def main():
-    args = parse_args()
-    original_filename = args.file
+def fix_latlon_atmosphere(original_filename, chunk_size):
     cube = iris.load_cube(original_filename)
     if needs_fix(cube):
-        perform_fix(original_filename, cube, args.chunk_size)
+        perform_fix(original_filename, cube, chunk_size)
     else:
         logging.info("No fix needed or fix not applicable.")
-
-
-if __name__ == '__main__':
-    main()

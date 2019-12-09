@@ -183,6 +183,19 @@ def replace_2d_coords_with_1d(cube):
     return cube
 
 
+def remove_coordinate_axis_type(cube):
+    """
+    Remove the `_CoordinateAxisType` attribute from the latitude and
+    longitude variables as this attribute isn't CF compliant.
+
+    :param iris.cube.Cube cube:
+    """
+    for coord_name in ['latitude', 'longitude']:
+        coord = cube.coord(coord_name)
+        if '_CoordinateAxisType' in coord.attributes:
+            coord.attributes.pop('_CoordinateAxisType')
+
+
 def fix_attributes(original_filename, tmp_filename):
     ds_o = netCDF4.Dataset(original_filename)
     ds_n = netCDF4.Dataset(tmp_filename, 'r+')
@@ -202,6 +215,7 @@ def fix_attributes(original_filename, tmp_filename):
 
 def perform_fix(original_filename, cube, chunk_size):
     cube = replace_2d_coords_with_1d(cube)
+    remove_coordinate_axis_type(cube)
     tmp_filename = original_filename+"_new.nc"
     shape = cube.shape
     val_size = cube.dtype.itemsize

@@ -207,7 +207,9 @@ def fix_attributes(original_filename, tmp_filename):
     ds_n.history = ds_o.history
     ds_n.Conventions = ds_o.Conventions
     v_n.history = v_o.history
-    v_n.cell_measures = v_o.cell_measures
+    # cell_measures may not exist
+    if hasattr(v_o, 'cell_measures'):
+        v_n.cell_measures = v_o.cell_measures
     if hasattr(v_o, 'missing_value'):
         v_n.missing_value = v_o.missing_value
     ds_n.close()

@@ -105,7 +105,7 @@ def chunk_shape_3D(varShape, valSize=4, chunkSize=4096):
 
 
 def needs_fix(cube):
-    if cube.attributes['realm'] != 'atmos':
+    if cube.attributes['realm'] not in ['atmos', 'land', 'landIce']:
         return False
     if cube.coord('latitude').ndim > 1 or cube.coord('longitude').ndim > 1:
         return True

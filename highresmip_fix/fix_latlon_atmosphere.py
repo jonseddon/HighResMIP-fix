@@ -231,6 +231,7 @@ def perform_fix(original_filename, cube, chunk_size):
     else:
         chunksizes = None
     iris.save(cube, tmp_filename,
+              netcdf_format='NETCDF4_CLASSIC',
               unlimited_dimensions=['time'],
               zlib=True, complevel=3, shuffle=True,
               chunksizes=chunksizes,
